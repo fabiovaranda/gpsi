@@ -1,0 +1,78 @@
+
+<div class="row" style='margin-top:2%'>
+	<div class="large-4 columns">
+	  <label>E-mail
+		<input type="text" name='email' id='email' placeholder="email@email.com" onchange='return validarMail()' required />
+	  </label>
+	</div>
+	<div class="large-4 columns">
+	  <label>Nome
+		<input type="text" name='nome' id='nome' placeholder="Nome" onchange='return validarNome()' required />
+	  </label>
+	</div>
+	<div class="large-4 columns">
+		<label>Tipo de Utilizador</label>
+		<select name="tipoUtilizador" id="tipoUtilizador" onchange="verificarTipoUtilizador()">
+		<option value="-1"></option>
+		<?php
+			include_once('DataAccess.php');
+			$da = new DataAccess();
+			$res = $da->getTiposUtilizador();
+			while($row = mysqli_fetch_object($res)){
+				echo "<option value='$row->id'>$row->tipo</option>";
+			}
+		?>
+		</select>
+	</div>
+</div>
+
+
+<div class="row">
+	<div class='large-12 columns'  id='rowDisciplinas' style='display:none;'>
+		<label>Disciplinas</label>
+		<table style='width:100%'>
+			<tbody>
+				<?php
+				// Conecção ao dataAccess
+					include_once('DataAccess.php');
+					$da = new DataAccess();
+					//vai buscar a função que se encontra no DataAccess para mostrar as disciplinas
+					$res = $da->getDisciplinas();
+					//Declarar a variável conta que o seu valor inicial é 0
+					$conta = 0;
+					//Declarar a variável contaDisciplina que o seu valor inicial é 0
+					$contaDisciplina=0;
+					//Conta o número de disciplinas que existem
+					//Enquanto a linha (imcompleto)
+					while($row = mysqli_fetch_object($res)){
+					//Incrementa uma disciplina
+						$contaDisciplina++;
+						//Se a variável conta for igual a 3
+						if ($conta == 3){
+						//Passa para a outra linha, pois cada linha so contêm 3 disciplinas
+							echo "</tr>";
+							$conta = 0;
+							}
+							//Adiciona 
+						$conta++;
+						if ($conta == 1)
+							echo "<tr style='background-color:white'>";
+						echo "<td><label><input name='ck".$contaDisciplina."' type='checkbox' value='$row->id'> $row->nome</label></td>";
+					}
+					if ($conta <3){
+						for ($i = $conta; $i<3; $i++)
+							echo "<td>&nbsp;</td>";
+						echo "</tr>";
+					}
+				?>
+		  </tbody>
+		</table>
+	</div>
+	<div class='large-2 large-centered columns'>
+		<?php
+			echo "<input type='hidden' name='contaDisciplina' value='$contaDisciplina'/>";
+			
+		?>
+		<input type='submit' value='Registar' onclick='return validarForm()' class='button tiny'/>
+	</div>
+</div>
